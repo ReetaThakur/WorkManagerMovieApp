@@ -30,10 +30,11 @@ class MainActivity : AppCompatActivity() {
                when(it){
                    is MainUIModel.onSuccess->{
                        movieList=it.responseDTO.results
-                       movieAdapter= MovieAdapter(this@MainActivity,movieList)
+                       movieAdapter= MovieAdapter(this@MainActivity)
                        var linearLayoutManager=LinearLayoutManager(this@MainActivity)
                        recyclerView.layoutManager=linearLayoutManager
                        recyclerView.adapter=movieAdapter
+                       movieAdapter.updateData(movieList)
                    }
                    is MainUIModel.onFailure->{
                        Toast.makeText(this@MainActivity,it.error,Toast.LENGTH_SHORT).show()
