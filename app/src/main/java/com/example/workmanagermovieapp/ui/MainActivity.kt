@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.workmanagermovieapp.R
 import com.example.workmanagermovieapp.dataFromJson.APICalling
@@ -17,13 +19,31 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
     private lateinit var movieList:List<Result>
     private lateinit var movieAdapter: MovieAdapter
+    private lateinit var viewModel:MovieViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-       fetchData()
+        viewModel=ViewModelProvider(this).get(MovieViewModel::class.java)
+        viewModel.callApi()
+       viewModel.liveData.observe(this,{
+           it.let {
+               when(it){
+                   is MainUIModel.onSuccess->{
+                       movieList=it.responseDTO.results
+                       movieAdapter= MovieAdapter(this@MainActivity,movieList)
+                       var linearLayoutManager=LinearLayoutManager(this@MainActivity)
+                       recyclerView.layoutManager=linearLayoutManager
+                       recyclerView.adapter=movieAdapter
+                   }
+                   is MainUIModel.onFailure->{
+                       Toast.makeText(this@MainActivity,it.error,Toast.LENGTH_SHORT).show()
+                   }
+               }
+           }
+       })
     }
 
-    private fun fetchData() {
+  /*  private fun fetchData() {
         val apiCalling:APICalling
          apiCalling =Network.getRetrofit().create(APICalling::class.java)
         var ree:Call<ResponseDTO> = apiCalling.getInstance(Network.API_KEY)
@@ -43,5 +63,5 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-    }
+    }*/
 }

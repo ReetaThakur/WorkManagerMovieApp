@@ -31,12 +31,19 @@ class MovieAdapter(val context: Context,val movieList:List<Result>) :RecyclerVie
         val movieName:TextView=view.findViewById(R.id.tvMovieName)
         val movieLanguage:TextView=view.findViewById(R.id.tvMovieLanguage)
         val moviePoster:ImageView=view.findViewById(R.id.moviepost)
+        val releaseData:TextView=view.findViewById(R.id.tvMovieReleasedData)
+        val popularity:TextView=view.findViewById(R.id.tvMoviePopularity)
+        val review:TextView=view.findViewById(R.id.tvMoviePverView)
 
         fun setData(model:Result){
             var pathImage="https://image.tmdb.org/t/p/w500"
             Glide.with(moviePoster).load(pathImage+model.poster_path).into(moviePoster)
-            movieName.text=model.title
-            movieLanguage.text=model.original_language
+            movieName.text="Movie Name - ${model.title}"
+            movieLanguage.text="Language - ${model.original_language}"
+            releaseData.text="Released Date - ${model.release_date}"
+            popularity.text="Pupularity - ${model.popularity.toString()}"
+            review.text="OverView - ${model.overview}"
+
         }
 
     }
