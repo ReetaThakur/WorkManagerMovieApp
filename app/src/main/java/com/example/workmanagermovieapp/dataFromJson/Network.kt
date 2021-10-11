@@ -8,4 +8,7 @@ object Network {
     val API_KEY="160d0d0be3e56d1d4f30ebac5fb17767"
     fun getRetrofit()= Retrofit.Builder().baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create()).build()
+
+    fun getApiService()= getRetrofit().create(APICalling::class.java)
+
 }
