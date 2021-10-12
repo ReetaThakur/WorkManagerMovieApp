@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.paging.DifferCallback
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -15,30 +16,35 @@ import com.example.workmanagermovieapp.dataFromJson.MovieDiffUtil
 import com.example.workmanagermovieapp.dataFromJson.ResponseDTO
 import com.example.workmanagermovieapp.dataFromJson.Result
 
-class MovieAdapter(val context: Context) :RecyclerView.Adapter<MovieAdapter.MovieViewHolder>(){
+class CharacterAdapter: PagingDataAdapter<Result, CharacterAdapter.MovieViewHolder>(diffUtil) {
 
-    private val movieList:ArrayList<Result> = ArrayList<Result>()
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<Result>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val view= LayoutInflater.from(context).inflate(R.layout.movie_item_layout,parent,false)
-        return MovieViewHolder(view)
+            override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Result, newItem:Result): Boolean {
+                return oldItem.equals(newItem)
+            }
+
+        }
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        val list=movieList[position]
-        holder.setData(list)
+        val result=getItem(position)
+        result.let {
+            if (it != null) {
+                holder.setData(it)
+            }
+        }
+
     }
 
-    override fun getItemCount(): Int {
-       return movieList.size
-    }
-    fun updateData(newMovieList:List<Result>){
-        val diffUtil=MovieDiffUtil(newMovieList,movieList)
-        val diffResult=DiffUtil.calculateDiff(diffUtil)
-        movieList.clear()
-        movieList.addAll(newMovieList)
-        diffResult.dispatchUpdatesTo(this)
-
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+        val view:View=LayoutInflater.from(parent.context).inflate(R.layout.movie_item_layout,parent,false)
+        return MovieViewHolder(view)
     }
 
 

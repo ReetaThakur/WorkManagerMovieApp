@@ -10,19 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MovieViewModel():ViewModel() {
-    private val repo=Repository()
-    private val mutableLiveData=MutableLiveData<MainUIModel>()
-    val liveData:LiveData<MainUIModel> = mutableLiveData
-
-    fun callApi(){
-        CoroutineScope(Dispatchers.IO).launch {
-          val responseDTO:ResponseDTO=repo.getCount()
-           if (responseDTO.results!=null){
-               mutableLiveData.postValue(MainUIModel.onSuccess(responseDTO))
-           }else{
-               mutableLiveData.postValue(MainUIModel.onFailure("Error Write Code Again"))
-           }
-        }
-    }
+    private val respository=Repository()
+    fun searchCharacter()=respository.getPageList()
 
 }
